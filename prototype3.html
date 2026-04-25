@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteOptimizer - Dynamic Supply Chain Resilience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #eef2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .supply-card {
+            max-width: 680px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: #0f3b2c;
+            padding: 1.5rem;
+            color: white;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .shipment-info {
+            background: #f0f9f4;
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .metric-box {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+        .delay-warning {
+            background: #ffedd5;
+            border-left: 5px solid #f97316;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-dark {
+            background: #1e293b;
+            color: white;
+        }
+        .btn-accent {
+            background: #2b7a4b;
+            color: white;
+        }
+        .log {
+            background: #1e293b;
+            color: #cbd5e1;
+            padding: 1rem;
+            border-radius: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="supply-card">
+    <div class="header">
+        <h1>📦 RouteOptimizer</h1>
+        <p>Predictive disruption detection · Dynamic rerouting</p>
+    </div>
+    <div class="content">
+        <div class="shipment-info">
+            <strong>🚚 Active Shipment: #LNX-8921</strong><br>
+            Chicago → Dallas · 3,200 units · Value: $420k
+        </div>
+
+        <div class="metrics">
+            <div class="metric-box">📍 Current ETA: <span id="etaDisplay">14:30 (on time)</span></div>
+            <div class="metric-box">⚠️ Risk Score: <span id="riskScore">Low (12%)</span></div>
+        </div>
+
+        <div id="alertZone">
+            <div class="metric-box" style="background: #e6f7ec;">🟢 Status: Normal transit · I-55 corridor</div>
+        </div>
+
+        <div class="btn-group">
+            <button id="simulateDisruption" class="btn btn-dark">🌪️ Simulate Weather Disruption</button>
+            <button id="optimizeRoute" class="btn btn-accent">🔄 Execute Optimized Reroute</button>
+        </div>
+
+        <div id="recommendationBox" class="delay-warning" style="display: none;">
+            💡 <strong>Dynamic Recommendation:</strong> <span id="recommendText">Switch to I-44 + US-69 to avoid 90min delay</span>
+        </div>
+
+        <div class="log" id="logPanel">
+            ✅ System active · Real-time analytics · No active bottleneck
+        </div>
+    </div>
+</div>
+
+<script>
+    let disrupted = false;
+    const etaDisplay = document.getElementById("etaDisplay");
+    const riskScoreSpan = document.getElementById("riskScore");
+    const alertZoneDiv = document.getElementById("alertZone");
+    const recommendationBox = document.getElementById("recommendationBox");
+    const recommendText = document.getElementById("recommendText");
+    const logPanel = document.getElementById("logPanel");
+
+    function updateUI() {
+        if (disrupted) {
+            etaDisplay.innerHTML = "16:45 (DELAYED +135min)";
+            riskScoreSpan.innerHTML = "High (87%)";
+            alertZoneDiv.innerHTML = '<div class="metric-box" style="background:#fff0e6; border-left:4px solid #dc2626;">⚠️ DISRUPTION ACTIVE: Storm on I-55 · Flooding near Springfield</div>';
+            recommendationBox.style.display = "block";
+            recommendText.innerHTML = "I-44 → US-69 alternate route (saves 78min) · immediate rerouting recommended";
+            logPanel.innerHTML = "⚠️ [ALERT] Predictive flag: weather bottleneck detected at 14:12 UTC. Cascading delay risk HIGH. Dynamic reroute ready.";
+        } else {
+            etaDisplay.innerHTML = "14:30 (on time)";
+            riskScoreSpan.innerHTML = "Low (12%)";
+            alertZoneDiv.innerHTML = '<div class="metric-box" style="background:#e6f7ec;">🟢 Status: Normal transit · I-55 corridor</div>';
+            recommendationBox.style.display = "none";
+            logPanel.innerHTML = "✅ Real-time monitoring active · no anomalies · ETA confidence 98%";
+        }
+    }
+
+    document.getElementById("simulateDisruption").addEventListener("click", () => {
+        disrupted = true;
+        updateUI();
+        // add extra simulation of bottleneck propagation
+        setTimeout(() => {
+            if (disrupted) {
+                logPanel.innerHTML = "⚠️ Secondary bottleneck detected at St. Louis junction · Dynamic optimization triggered · alternative paths computed";
+            }
+        }, 500);
+    });
+
+    document.getElementById("optimizeRoute").addEventListener("click", () => {
+        if (disrupted) {
+            disrupted = false;
+            updateUI();
+            logPanel.innerHTML = "✅ REROUTE EXECUTED: New route I-44 → US-69. Estimated arrival 15:10 (delay reduced to 40min). Supply chain stabilized.";
+            etaDisplay.innerHTML = "15:10 (optimized)";
+        } else {
+            logPanel.innerHTML = "📊 Preemptive optimization: minor route adjustment to avoid afternoon congestion · new ETA 14:20 (10min saved)";
+            etaDisplay.innerHTML = "14:20 (improved)";
+        }
+    });
+
+    updateUI();
+</script>
+</body>
+</html>
